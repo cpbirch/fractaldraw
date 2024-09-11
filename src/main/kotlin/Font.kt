@@ -1,2 +1,3 @@
-class Font {
+class Font (size: Int, antiAlias: Boolean) {
+
 }
