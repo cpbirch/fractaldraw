@@ -108,7 +108,7 @@ fun loop(graphics2D: Graphics2D) {
         // canvas.drawPoint(x, y, paint) // doesn't seem to draw anything
         // canvas.drawRect(Rect.makeXYWH(x,y,2f,2f), paint) // 1x1 size renders weird
         val pixel = fp.colourAtPixel(x to y)
-        println("colour: ${pixel.colour.R} ${pixel.colour.G} ${pixel.colour.B}")
+//        println("colour: ${pixel.colour.R} ${pixel.colour.G} ${pixel.colour.B}")
         bytePos = (pixel.pixelCoord.x() * 4) + (pixel.pixelCoord.y() * graphics2D.imageInfo.minRowBytes.toInt())
         graphics2D.pixels[bytePos] = pixel.colour.R.toByte()
         graphics2D.pixels[bytePos + 1] = pixel.colour.G.toByte()

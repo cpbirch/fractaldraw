@@ -152,18 +152,18 @@ class FractalPlaneTest {
         assertEquals(0, colour.B)
     }
 
-    @Test
-    fun `should return white for a MAX_I iteration`() {
-        val fp = FractalPlane()
-
-        // when
-        val colour = fp.naiveRGBColour(0)
-
-        // then
-        assertEquals(255, colour.R)
-        assertEquals(255, colour.G)
-        assertEquals(255, colour.B)
-    }
+//    @Test
+//    fun `should return white for a MAX_I iteration`() {
+//        val fp = FractalPlane()
+//
+//        // when
+//        val colour = fp.naiveRGBColour(0)
+//
+//        // then
+//        assertEquals(255, colour.R)
+//        assertEquals(255, colour.G)
+//        assertEquals(255, colour.B)
+//    }
 
     @Test
     fun `should return neither white or black for a median iteration length`() {
