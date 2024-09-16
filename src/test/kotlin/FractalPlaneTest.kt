@@ -139,45 +139,4 @@ class FractalPlaneTest {
         assertEquals(50, pixelCoord.y())
     }
 
-    @Test
-    fun `should return black for a zero iteration`() {
-        val fp = FractalPlane()
-
-        // when
-        val colour = fp.naiveRGBColour(512)
-
-        // then
-        assertEquals(0, colour.R)
-        assertEquals(0, colour.G)
-        assertEquals(0, colour.B)
-    }
-
-//    @Test
-//    fun `should return white for a MAX_I iteration`() {
-//        val fp = FractalPlane()
-//
-//        // when
-//        val colour = fp.naiveRGBColour(0)
-//
-//        // then
-//        assertEquals(255, colour.R)
-//        assertEquals(255, colour.G)
-//        assertEquals(255, colour.B)
-//    }
-
-    @Test
-    fun `should return neither white or black for a median iteration length`() {
-        val fp = FractalPlane()
-
-        // when
-        val colour = fp.naiveRGBColour(405)
-
-        // then
-        assertNotEquals(255, colour.R)
-        assertNotEquals(255, colour.G)
-        assertNotEquals(255, colour.B)
-        assertNotEquals(0, colour.R)
-        assertNotEquals(0, colour.G)
-        assertNotEquals(0, colour.B)
-    }
 }

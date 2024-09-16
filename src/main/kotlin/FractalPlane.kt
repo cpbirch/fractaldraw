@@ -32,29 +32,6 @@ class FractalPlane(
         palette = generateSHMPalette(MAX_I)
     }
 
-    fun toHSVColour(iteration: Int): HSV {
-        val h = iteration.toFloat().pow(1.5f).mod(360f).div(360f)
-        val s = 1f
-        val v = iteration.toFloat() / MAX_I
-//        println("h: $h, s: $s, v: $v")
-        return HSV( h, s, v)
-    }
-
-    fun naiveRGBColour(iteration: Int): ARGB {
-        if (iteration <= 73) {
-            return Colour.GRAY.argb
-        } else {
-            // max 512 is 2^9 so 3 bits per colour
-            // blue will be high order bits, red low
-            val rgbInt = if (iteration > 73) iteration.toUInt() else MAX_I.toUInt() -1U
-            val r = (rgbInt and 0b111000000U) shr 1
-            val g = (rgbInt and 0b111000U) shl 2
-            val b = (rgbInt and 0b111U) shl 5
-//            println(" iteration: $iteration, rgbInt: $rgbInt, r$r g$g b$b")
-            return ARGB(255, r.toInt(), g.toInt(), b.toInt())
-        }
-    }
-
     fun colourAtPixel(pixelCoord: PixelCoord): PaintedPixel {
         var fc = toFractalCoord(pixelCoord)
         var x2 = 0f // x2:= 0
