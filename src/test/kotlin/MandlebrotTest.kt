@@ -4,47 +4,7 @@ import kotlin.test.assertTrue
 
 class MandlebrotTest {
 
-    @Test
-    fun `should calculate never escapes (max iterations)`() {
-        // given
-        val m = Mandlebrot(128)
-
-        // when
-        val escapeIterations = m.iterationsToEscapeValue(0f, 0f) // escape assumes infinite value
-
-        // then
-        assertEquals(128, escapeIterations)
-    }
-
-    @Test
-    fun `should quickly hit escape value (fewer iterations)`() {
-        // given
-        val m = Mandlebrot(128)
-
-        // when
-        val escapeIterations = m.iterationsToEscapeValue(-2f, 1.12f) // escape assumes infinite value
-        println(escapeIterations)
-
-        // then
-        assertTrue(escapeIterations < 128, "$escapeIterations is not less than 128")
-        assertEquals(escapeIterations, 1)
-    }
-
-    @Test
-    fun `should slowly hit escape value (many iterations)`() {
-        // given
-        val m = Mandlebrot(128)
-
-        // when
-        val escapeIterations = m.iterationsToEscapeValue(-0.8f, 0.9f) // escape assumes infinite value
-        println(escapeIterations)
-
-        // then
-        assertTrue(escapeIterations < 128, "$escapeIterations is not less than 1080")
-        assertEquals(4, escapeIterations)
-    }
-
-    @Test
+     @Test
     fun `should calculate never escapes (max iterations) alt`() {
         // given
         val m = Mandlebrot(128)

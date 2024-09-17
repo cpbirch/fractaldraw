@@ -102,36 +102,43 @@ fun loop(graphics2D: Graphics2D) {
     var x = 0
     var y = 0
     var bytePos = 0
+    val calculator = Mandlebrot(1080)
 
     // Render loop
     while (!glfwWindowShouldClose(graphics2D.window)) {
         // canvas.drawPoint(x, y, paint) // doesn't seem to draw anything
         // canvas.drawRect(Rect.makeXYWH(x,y,2f,2f), paint) // 1x1 size renders weird
-        val pixel = fp.colourAtPixel(x to y)
-//        println("colour: ${pixel.colour.R} ${pixel.colour.G} ${pixel.colour.B}")
-        bytePos = (pixel.pixelCoord.x() * 4) + (pixel.pixelCoord.y() * graphics2D.imageInfo.minRowBytes.toInt())
-        graphics2D.pixels[bytePos] = pixel.colour.R.toByte()
-        graphics2D.pixels[bytePos + 1] = pixel.colour.G.toByte()
-        graphics2D.pixels[bytePos + 2] = pixel.colour.B.toByte()
-        graphics2D.pixels[bytePos + 3] = pixel.colour.A.toByte()
+        if (y < fp.pixelHeight) {
+            val row = calculator.rowEscapeValues(
+                fp.bound.left,
+                fp.bound.right,
+                fp.toFractalCoord(x to y).top(),
+                fp.pixelWidth
+            )
+            row.forEach {
+                val argb = if (it < 1080) fp.palette[it] else Colour.BLACK.argb
+                val byte = (x * 4) + (y * graphics2D.imageInfo.minRowBytes.toInt())
+                graphics2D.pixels[byte] = argb.R.toByte()
+                graphics2D.pixels[byte + 1] = argb.G.toByte()
+                graphics2D.pixels[byte + 2] = argb.B.toByte()
+                graphics2D.pixels[byte + 3] = argb.A.toByte()
+                x++
+            }
 
-        graphics2D.bitmap.installPixels(graphics2D.imageInfo, graphics2D.pixels, graphics2D.imageInfo.minRowBytes)
-        graphics2D.bitmap.notifyPixelsChanged()
-        // val image = Image.makeRasterFromBitmap(graphics2D.bitmap.setImmutable())
-        // canvas.drawImage(image, 0f, 0f)
-        graphics2D.surface.writePixels(graphics2D.bitmap, 0, 0)
-
-        x++
-        if (x >= graphics2D.width) {
-            println("line $y done")
+            graphics2D.bitmap.installPixels(graphics2D.imageInfo, graphics2D.pixels, graphics2D.imageInfo.minRowBytes)
+            graphics2D.bitmap.notifyPixelsChanged()
+            // val image = Image.makeRasterFromBitmap(graphics2D.bitmap.setImmutable())
+            // canvas.drawImage(image, 0f, 0f)
+            graphics2D.surface.writePixels(graphics2D.bitmap, 0, 0)
             x = 0
             y++
-
-            // DRAW HERE!!!
-            graphics2D.context.flush()
-            glfwSwapBuffers(graphics2D.window) // wait for v-sync
-            glfwPollEvents()
         }
+//            println("line $y done")
+
+        // DRAW HERE!!!
+        graphics2D.context.flush()
+        glfwSwapBuffers(graphics2D.window) // wait for v-sync
+        glfwPollEvents()
     }
 }
 
