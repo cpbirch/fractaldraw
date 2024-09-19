@@ -1,14 +1,10 @@
 import io.github.humbleui.skija.*
-import io.github.humbleui.types.Rect
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.*
 import org.lwjgl.system.MemoryUtil.NULL
-import kotlin.concurrent.timer
+import kotlin.time.TimeSource
 
 
 data class Graphics2D(
@@ -25,29 +21,37 @@ data class Graphics2D(
     val height: Int = 480
 )
 
-fun main(args: Array<String>) {
-    println("Hello World!")
+fun parseArgs(args: Array<String>) = args.fold(Pair(emptyMap<String, List<String>>(), "")) { (map, lastKey), elem ->
+        if (elem.startsWith("-"))  Pair(map + (elem to emptyList()), elem)
+        else Pair(map + (lastKey to map.getOrDefault(lastKey, emptyList()) + elem), lastKey)
+    }.first
 
+fun main(args: Array<String>) {
+    val argmap = parseArgs(args)
+
+    println("""
+        -p <num-threads>
+        -w <pixels-width>
+    """.trimIndent())
     // Try adding program arguments via Run/Debug configuration.
     // Learn more about running applications: https://www.jetbrains.com/help/idea/running-applications.html.
-    println("Program arguments: ${args.joinToString()}")
+    println("Program arguments: ${args.joinToString(" ")}")
 
-    val graphics = init()
-    loop(graphics)
+    val graphics = init(argmap.get("-w")?.get(0)?.toInt() ?: 640)
+    loop(graphics, argmap.get("-p")?.get(0)?.toInt() ?: 1)
     destroy(graphics)
 }
 
-fun init(): Graphics2D {
+fun init(width: Int = 640): Graphics2D {
+    val height: Int = (width * 0.75).toInt()
     val errorCallback: GLFWErrorCallback = GLFWErrorCallback.createPrint(System.err)
-    glfwSetErrorCallback( errorCallback )
+    glfwSetErrorCallback(errorCallback)
 
     // Initialise the GLFW
-    if ( ! glfwInit() ) {
+    if (!glfwInit()) {
         throw IllegalStateException("Unable to initialise GLFW")
     }
 
-    val width = 640
-    val height = 480
     val title = "Fractal Draw"
 
     // Create window
@@ -88,62 +92,70 @@ fun init(): Graphics2D {
 
     // do not .close() — Surface manages its lifetime here
     val canvas: Canvas = surface.getCanvas()
-    val imageInfo: ImageInfo = ImageInfo(width, height, ColorType.RGBA_8888, ColorAlphaType.PREMUL)
-    val bitmap: Bitmap = Bitmap()
+    val imageInfo = ImageInfo(width, height, ColorType.RGBA_8888, ColorAlphaType.PREMUL)
+    val bitmap = Bitmap()
     bitmap.allocPixelsFlags(imageInfo, true)
     val pixels = ByteArray((imageInfo.minRowBytes * height).toInt()) { 0 }
 
-    return Graphics2D(windowHandle, errorCallback, context, renderTarget, surface, canvas, bitmap, pixels, imageInfo, width, height)
+    return Graphics2D(
+        windowHandle,
+        errorCallback,
+        context,
+        renderTarget,
+        surface,
+        canvas,
+        bitmap,
+        pixels,
+        imageInfo,
+        width,
+        height
+    )
 }
 
-fun loop(graphics2D: Graphics2D) {
+fun loop(graphics2D: Graphics2D, parallel: Int = 1) {
     // val blueish = Paint().apply { setColor(0xFF3344AA.toInt()) }
     val fp = FractalPlane(pixelWidth = graphics2D.width, pixelHeight = graphics2D.height)
-    var x = 0
     var y = 0
-    var bytePos = 0
-    val calculator = Mandlebrot(1080)
+    val calculator = Mandlebrot(fp.MAX_I)
+    val maxY = fp.pixelHeight / parallel
+    println("maxY: $maxY")
 
-    // Render loop
+    val timeSource = TimeSource.Monotonic
+    val mark1 = timeSource.markNow()
+    var mark2 = mark1
+
     while (!glfwWindowShouldClose(graphics2D.window)) {
         // canvas.drawPoint(x, y, paint) // doesn't seem to draw anything
         // canvas.drawRect(Rect.makeXYWH(x,y,2f,2f), paint) // 1x1 size renders weird
-        if (y < fp.pixelHeight) {
-            val row = calculator.rowEscapeValues(
-                fp.bound.left,
-                fp.bound.right,
-                fp.toFractalCoord(x to y).top(),
-                fp.pixelWidth
-            )
-            row.forEach {
-                val argb = if (it < 1080) fp.palette[it] else Colour.BLACK.argb
-                val byte = (x * 4) + (y * graphics2D.imageInfo.minRowBytes.toInt())
-                graphics2D.pixels[byte] = argb.R.toByte()
-                graphics2D.pixels[byte + 1] = argb.G.toByte()
-                graphics2D.pixels[byte + 2] = argb.B.toByte()
-                graphics2D.pixels[byte + 3] = argb.A.toByte()
-                x++
-            }
+
+        if (y < maxY) {
+            calculator.rowParallelEscapeValuesAsList(fp, y, parallel)
+                .forEach {row ->
+                    var x = 0
+                    row.escapeVals.forEach {
+                        fp.colourPixel(it, x, row.row, graphics2D.imageInfo.minRowBytes.toInt(), graphics2D.pixels)
+                        x++
+                    }
+                }
 
             graphics2D.bitmap.installPixels(graphics2D.imageInfo, graphics2D.pixels, graphics2D.imageInfo.minRowBytes)
             graphics2D.bitmap.notifyPixelsChanged()
             // val image = Image.makeRasterFromBitmap(graphics2D.bitmap.setImmutable())
             // canvas.drawImage(image, 0f, 0f)
             graphics2D.surface.writePixels(graphics2D.bitmap, 0, 0)
-            x = 0
             y++
-        }
-//            println("line $y done")
 
-        // DRAW HERE!!!
-        graphics2D.context.flush()
-        glfwSwapBuffers(graphics2D.window) // wait for v-sync
+            // DRAW HERE!!!
+            graphics2D.context.flush()
+            glfwSwapBuffers(graphics2D.window) // wait for v-sync
+        } else if (mark2 == mark1) {
+            mark2 = timeSource.markNow()
+            println(mark2 - mark1)
+        }
+
         glfwPollEvents()
     }
-}
-
-private fun update(graphics2D: Graphics2D, fractalPlane: FractalPlane) {
-
+    // Render loop
 }
 
 fun destroy(graphics2D: Graphics2D) {

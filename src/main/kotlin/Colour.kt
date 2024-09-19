@@ -41,8 +41,8 @@ data class HSV(val H: Float, val S: Float, val V: Float) {
 fun generateSHMPalette(size: Int): List<ARGB> {
     val palette = MutableList<ARGB>(1080) {
         val blue = sin(Math.toRadians((it + 90).toDouble())) * 255
-        val green = sin(Math.toRadians((it+300).toDouble())) * 255 // 30 degree offset
-        val red = sin(Math.toRadians((it+210).toDouble())) * 255
+        val green = sin(Math.toRadians(it * 1.33 +45)) * 255 // 30 degree offset
+        val red = sin(Math.toRadians(it * 1.41 +30)) * 255
 //        println ("r: $red, g: $green, b: $blue")
         ARGB(255, if (red >= 0) red.toInt() else 0, if (green >= 0) green.toInt() else 0, if (blue >= 0) blue.toInt() else 0) }
     return palette

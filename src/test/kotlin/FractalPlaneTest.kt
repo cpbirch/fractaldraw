@@ -5,54 +5,47 @@ import kotlin.test.Test
 class FractalPlaneTest {
 
     @Test
-    fun `should return a 0x0 grey pixel`() {
+    fun `should return 1_12 for y = 0`() {
         val fp = FractalPlane()
 
         // when
-        val paintedPixel = fp.colourAtPixel(0 to 0)
+        val y = fp.toFractalY(0)
 
         // then
-        assertEquals(0, paintedPixel.pixelCoord.x())
-        assertEquals(0, paintedPixel.pixelCoord.y())
-//        assertEquals(0xFFABABAB.toInt(), paintedPixel.colour)
+        assertEquals(1.12f, y)
     }
 
     @Test
-    fun `should return a 20x20 grey pixel`() {
-        val fp = FractalPlane()
+    fun `should return 1f for y = 0`() {
+        val fp = FractalPlane(Rect(-1f,1f, 1f, -1f), 100, 100)
 
         // when
-        val paintedPixel = fp.colourAtPixel(20 to 20)
+        val y = fp.toFractalY(0)
 
         // then
-        assertEquals(20, paintedPixel.pixelCoord.x())
-        assertEquals(20, paintedPixel.pixelCoord.y())
-//        assertEquals(0xFFABABAB.toInt(), paintedPixel.colour)
+        assertEquals(1f, y)
     }
 
     @Test
-    fun `should return a black pixel at midpoint`() {
-        val fp = FractalPlane()
+    fun `should return -1f for y = 100`() {
+        val fp = FractalPlane(Rect(-1f,1f, 1f, -1f), 100, 100)
 
         // when
-        val paintedPixel = fp.colourAtPixel(320 to 240)
+        val y = fp.toFractalY(100)
 
         // then
-        assertEquals(320, paintedPixel.pixelCoord.x())
-        assertEquals(240, paintedPixel.pixelCoord.y())
-        assertEquals(Colour.BLACK.argb, paintedPixel.colour)
+        assertEquals(-1f, y)
     }
 
     @Test
-    fun `should return -2_0 to 1_12 for pixelCoord 0x0`() {
-        val fp = FractalPlane()
+    fun `should return 0f for y = 50`() {
+        val fp = FractalPlane(Rect(-1f,1f, 1f, -1f), 100, 100)
 
         // when
-        val fractalCoord = fp.toFractalCoord(0 to 0)
+        val y = fp.toFractalY(50)
 
         // then
-        assertEquals(-2.0f, fractalCoord.left())
-        assertEquals(1.12f, fractalCoord.top())
+        assertEquals(0f, y)
     }
 
     @Test
