@@ -6,12 +6,12 @@ import org.lwjgl.system.MemoryUtil.NULL
 
 
 class Window (
-    private var id: Long,
-    private var keyCallback: GLFWKeyCallback,
-    var vsync: Boolean,
-    width: Int,
-    height: Int,
-    title: CharSequence
+    width: Int = 320,
+    height: Int = 240,
+    title: CharSequence = "Mandlebrot",
+    private var id: Long = -1,
+    private var keyCallback: GLFWKeyCallback? = null,
+    var vsync: Boolean = true
 ) {
 
     init {
@@ -27,17 +27,8 @@ class Window (
 
         /* Reset and set window hints */
         glfwDefaultWindowHints()
-        if (caps.OpenGL32) {
-            /* Hints for OpenGL 3.2 core profile */
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2)
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE)
-        } else {
-            throw RuntimeException("Neither OpenGL 3.2 nor OpenGL 2.1 is "
-                    + "supported, you may want to update your graphics driver.");
-        }
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
 
         /* Create window with specified OpenGL context */
         glfwCreateWindow(width, height, title, NULL, NULL).also {
@@ -69,6 +60,8 @@ class Window (
         }
     }
 
+    fun showWindow() = glfwShowWindow(id)
+
     fun isClosing() = glfwWindowShouldClose(id)
 
     fun setTitle(title: CharSequence) = glfwSetWindowTitle(id, title)
@@ -78,9 +71,13 @@ class Window (
         glfwPollEvents()
     }
 
+    fun swapBuffer() = glfwSwapBuffers(id)
+
+    fun pollEvents() = glfwPollEvents()
+
     fun destroy() {
         glfwDestroyWindow(id)
-        keyCallback.free()
+        keyCallback?.free()
     }
 
     fun setVSync(vsync: Boolean) {
