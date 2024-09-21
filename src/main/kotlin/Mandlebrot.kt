@@ -1,4 +1,3 @@
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -21,58 +20,35 @@ class Mandlebrot(val maxIterations: Int) {
     fun rowEscapeValues(xStart: Float, y: Float, stepVal: Float): Sequence<Int> {
         return generateSequence(xStart) {
             it + stepVal
-        }.map {
-            iterationsToEscapeVals(it, y)
+        }.map { x ->
+            iterationsToEscapeVals(x, y)
         }
     }
 
-    fun rowEscapeValuesAsList(xStart: Float, xEnd: Float, y: Float, length: Int): List<Int> {
-        val stepVal = (xEnd - xStart) / length
-        return rowEscapeValues(xStart, y, stepVal).take(length).toList()
-    }
+    fun rowEscapeColourBytes(fp: FractalPlane, row: Int) = rowEscapeValues(fp.bound.left, fp.toFractalY(row), fp.rowStep)
+            .flatMap {
+                fp.rowEscapeValColourBytes(it) }
+            .take(fp.pixelWidth * 4) // 4 bytes per pixel
+            .toList()
 
-    fun rowEscapeValuesAsList(fp: FractalPlane, row: Int): List<Int> {
-        return rowEscapeValuesAsList(
-            fp.bound.left,
-            fp.bound.right,
-            fp.toFractalY(row),
-            fp.pixelWidth
-        )
-    }
-
-    fun rowParallelEscapeValuesAsList(fp: FractalPlane, row: Int, parallelRows: Int): List<Row> {
+    fun parallelEscapeColourBytesRows(fp: FractalPlane, row: Int, parallelRows: Int): List<Row> {
         var rows: List<Row>
         runBlocking {
             val channel = Channel<Row>()
             val stepVal: Int = fp.pixelHeight / parallelRows
-            (row..< fp.pixelHeight step stepVal).forEach {
-//                println("row: $it")
+            (row..<fp.pixelHeight step stepVal).forEach {
                 launch {
-                    channel.send(
-                        Row(
-                            it, rowEscapeValuesAsList(
-                                fp.bound.left,
-                                fp.bound.right,
-                                fp.toFractalY(it),
-                                fp.pixelWidth
-                            )
-                        )
-                    )
+                    val rgbaRow = rowEscapeColourBytes(fp, it)
+                    channel.send(Row(it, rgbaRow))
                 }
             }
-            rows = MutableList<Row>(parallelRows) {
+            rows = MutableList(parallelRows) {
                 channel.receive()
             }
         }
         return rows
     }
 
-    // fun rowParallel( ... )
-    // step size = height / parallel
-    // generateSequence(0) { it + stepSize }
-    // .map { rowEscapeValues xstart, xend, it, rowLength }
-    // .take(parallel)
-
 }
 
-data class Row(val row: Int, val escapeVals: List<Int>)
+data class Row(val row: Int, val escapeVals: List<Byte>)

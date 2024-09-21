@@ -132,4 +132,20 @@ class FractalPlaneTest {
         assertEquals(50, pixelCoord.y())
     }
 
+    @Test
+    fun `should convert escapeVals sequence to RGBA byte sequence`() {
+        // given
+        val fp = FractalPlane(pixelWidth = 100, MAX_I = 128)
+        val escapeVal = 128
+
+        // when
+        val rgbaList = fp.rowEscapeValColourBytes(escapeVal)
+
+        // then
+        assertEquals(4, rgbaList.size)
+        assertEquals(0, rgbaList[0])
+        assertEquals(0, rgbaList[1])
+        assertEquals(0, rgbaList[2])
+        assertEquals(255.toByte(), rgbaList[3])
+    }
 }

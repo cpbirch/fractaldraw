@@ -26,7 +26,8 @@ fun parseArgs(args: Array<String>) = args.fold(Pair(emptyMap<String, List<String
 fun main(args: Array<String>) {
     val argmap = parseArgs(args)
 
-    println("""
+    println(
+        """
         -p <num-threads>
         -w <pixels-width>
     """.trimIndent()
@@ -34,7 +35,7 @@ fun main(args: Array<String>) {
     println("Program arguments: ${args.joinToString(" ")}")
 
     val graphics = init(argmap.get("-w")?.get(0)?.toInt() ?: 640)
-    loop(graphics, argmap.get("-p")?.get(0)?.toInt() ?: 1)
+    loop(graphics, argmap)
     destroy(graphics)
 }
 
@@ -98,35 +99,32 @@ fun init(width: Int = 640): Graphics2D {
     )
 }
 
-fun loop(graphics2D: Graphics2D, parallel: Int = 1) {
-    val fp = FractalPlane(pixelWidth = graphics2D.width, pixelHeight = graphics2D.height)
+fun loop(graphics2D: Graphics2D, argMap: Map<String, List<String>>) {
+    val parallel = argMap["-p"]?.get(0)?.toInt() ?: 1
+    val fp = FractalPlane(pixelWidth = graphics2D.width)
     var y = 0
     val calculator = Mandlebrot(fp.MAX_I)
     val maxY = fp.pixelHeight / parallel
     println("maxY: $maxY")
+    println("minRowBytes: ${graphics2D.imageInfo.minRowBytes}")
 
     val timeSource = TimeSource.Monotonic
     val mark1 = timeSource.markNow()
     var mark2 = mark1
 
     while (!graphics2D.window.isClosing()) {
-        // canvas.drawPoint(x, y, paint) // doesn't seem to draw anything
-        // canvas.drawRect(Rect.makeXYWH(x,y,2f,2f), paint) // 1x1 size renders weird
-
         if (y < maxY) {
-            calculator.rowParallelEscapeValuesAsList(fp, y, parallel)
-                .forEach { row ->
-                    var x = 0
-                    row.escapeVals.forEach {
-                        fp.colourPixel(it, x, row.row, graphics2D.imageInfo.minRowBytes.toInt(), graphics2D.pixels)
-                        x++
-                    }
+            calculator.parallelEscapeColourBytesRows(fp, y, parallel).forEach { row ->
+                val yByte = row.row * graphics2D.imageInfo.minRowBytes.toInt()
+                var x = 0
+                row.escapeVals.forEach {
+                    graphics2D.pixels[yByte + x] = it
+                    x++
                 }
+            }
 
             graphics2D.bitmap.installPixels(graphics2D.imageInfo, graphics2D.pixels, graphics2D.imageInfo.minRowBytes)
             graphics2D.bitmap.notifyPixelsChanged()
-            // val image = Image.makeRasterFromBitmap(graphics2D.bitmap.setImmutable())
-            // canvas.drawImage(image, 0f, 0f)
             graphics2D.surface.writePixels(graphics2D.bitmap, 0, 0)
             y++
 
