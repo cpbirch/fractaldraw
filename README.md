@@ -1,10 +1,12 @@
-# README
-## TLDR;
+
+# TLDR;
 `./gradlew run -p 4`
 
 Your mileage may vary... see problems below.
 
 Zoom in: `./gradlew run -p 8 -w 1024 -fl neg0.06 -fr 0.1 -ft 0.74`
+
+Built with OpenJDK 22.0.1
 
 # Why
 
