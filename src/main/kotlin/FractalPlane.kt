@@ -34,7 +34,7 @@ class FractalPlane(
     init {
         fBottom = fTop - ((fRight - fLeft) * aspectRatio)
         bound = Rect(fLeft, fTop, fRight, fBottom)
-        pixelHeight = (pixelWidth * 0.75).toInt() // preserve 4/3 ratio
+        pixelHeight = (pixelWidth * aspectRatio).toInt() // preserve 4/3 ratio
         xScale = bound.width / pixelWidth
         yScale = bound.height / pixelHeight
         palette = generateSHMPalette(MAX_I)

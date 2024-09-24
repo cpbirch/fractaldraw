@@ -46,7 +46,8 @@ fun main(args: Array<String>) {
 
 fun init(argMap: Map<String, List<String>>): Graphics2D {
     val width = argMap.get("-w")?.get(0)?.toInt() ?: 640
-    val height: Int = (width * 0.75).toInt()
+    val aspectRatio = argMap.get("-ar")?.get(0)?.toFloat() ?: 0.75f
+    val height: Int = (width * aspectRatio).toInt()
     val errorCallback: GLFWErrorCallback = GLFWErrorCallback.createPrint(System.err)
     glfwSetErrorCallback(errorCallback)
 
