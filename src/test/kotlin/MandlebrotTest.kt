@@ -52,7 +52,7 @@ class MandlebrotTest {
         val row = 0
 
         // when
-        val escapeRowList = m.rowEscapeValues(fp.bound.left, fp.toFractalY(row), fp.rowStep).take(22).toList()
+        val escapeRowList = m.rowEscapeValues(fp.bound.left, fp.toFractalY(row), fp.xScale).take(22).toList()
 
         escapeRowList.forEach { println("Value: $it") }
 
@@ -101,6 +101,26 @@ class MandlebrotTest {
         assertEquals(8, escapeRowList[1].row) // 22 pixels wide * .75 = 16 pixels high, therefore row 0 & 8
         assertEquals(127.toByte(), escapeRowList[0].escapeVals[0])
         assertEquals(132.toByte(), escapeRowList[0].escapeVals[20])
+    }
+
+    @Test
+    fun `should calculate 4 evenly distributed rows of escape values`() {
+        // given
+        val fp = FractalPlane(pixelWidth = 231, MAX_I = 128)
+        val m = Mandlebrot(fp.MAX_I)
+        val row = 0
+        val parallelRows = 4
+
+        // when
+        val escapeRowList = m.parallelEscapeColourBytesRows(fp, row, parallelRows)
+        escapeRowList[0].escapeVals.take(20).chunked(4).forEach { println("Colour: $it") }
+
+        // then
+        assertEquals(4, escapeRowList.size)
+        assertEquals(0, escapeRowList[0].row)
+        assertEquals(43, escapeRowList[1].row) // 231 pixels wide * .75 = 173 pixels high, therefore row 0, 43, 86, 129
+        assertEquals(127.toByte(), escapeRowList[0].escapeVals[0])
+        assertEquals(127.toByte(), escapeRowList[0].escapeVals[20])
     }
 
     @Test

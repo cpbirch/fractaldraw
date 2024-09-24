@@ -17,17 +17,13 @@ class Mandlebrot(val maxIterations: Int) {
         else iterationsToEscapeVals(xInit, yInit, iteration + 1, x1, y1)
     }
 
-    fun rowEscapeValues(xStart: Float, y: Float, stepVal: Float): Sequence<Int> {
-        return generateSequence(xStart) {
-            it + stepVal
-        }.map { x ->
-            iterationsToEscapeVals(x, y)
-        }
-    }
+    fun rowEscapeValues(xStart: Float, y: Float, stepVal: Float): Sequence<Int> =
+        generateSequence(xStart) { it + stepVal }
+            .map { x -> iterationsToEscapeVals(x, y) }
 
-    fun rowEscapeColourBytes(fp: FractalPlane, row: Int) = rowEscapeValues(fp.bound.left, fp.toFractalY(row), fp.rowStep)
-            .flatMap {
-                fp.rowEscapeValColourBytes(it) }
+    fun rowEscapeColourBytes(fp: FractalPlane, row: Int) =
+        rowEscapeValues(fp.bound.left, fp.toFractalY(row), fp.xScale)
+            .flatMap { fp.rowEscapeValColourBytes(it) }
             .take(fp.pixelWidth * 4) // 4 bytes per pixel
             .toList()
 
@@ -36,8 +32,9 @@ class Mandlebrot(val maxIterations: Int) {
         runBlocking {
             val channel = Channel<Row>()
             val stepVal: Int = fp.pixelHeight / parallelRows
-            (row..<fp.pixelHeight step stepVal).forEach {
-                launch {
+            (row..<fp.pixelHeight step stepVal).take(parallelRows).forEach {
+//                println("foreach $it of ${fp.pixelHeight} step $stepVal")
+                if (it < fp.pixelHeight) launch {
                     val rgbaRow = rowEscapeColourBytes(fp, it)
                     channel.send(Row(it, rgbaRow))
                 }

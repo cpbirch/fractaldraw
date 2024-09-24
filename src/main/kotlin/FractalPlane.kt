@@ -16,18 +16,25 @@ fun FractalCoord.top() = this.second
 data class PaintedPixel(val pixelCoord: PixelCoord = 0 to 0, val colour: ARGB = Colour.GRAY.argb)
 
 class FractalPlane(
-    val bound: Rect = Rect(-2.00f, 1.12f, 0.47f, -1.12f),
+    val fLeft: Float = -2f,
+    val fRight: Float = 0.47f,
+    val fTop: Float = 1.12f,
     val pixelWidth: Int = 640,
+    val aspectRatio: Float = 0.75f,
     val MAX_I: Int = 1080
 ) {
+    val fBottom: Float
+    val bound: Rect
     val xScale: Float
     val yScale: Float
     val palette: List<ARGB>
-    val pixelHeight: Int = (pixelWidth * 0.75).toInt() // preserve 4/3 ratio
-    val rowStep = (bound.right - bound.left) / pixelWidth
+    val pixelHeight: Int
     val b255 = 255.toByte()
 
     init {
+        fBottom = fTop - ((fRight - fLeft) * aspectRatio)
+        bound = Rect(fLeft, fTop, fRight, fBottom)
+        pixelHeight = (pixelWidth * 0.75).toInt() // preserve 4/3 ratio
         xScale = bound.width / pixelWidth
         yScale = bound.height / pixelHeight
         palette = generateSHMPalette(MAX_I)
