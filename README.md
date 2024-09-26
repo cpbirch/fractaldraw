@@ -5,8 +5,9 @@
 Your mileage may vary... see problems below.
 
 Zoom in: `./gradlew run -p 8 -w 1024 -fl neg0.06 -fr 0.1 -ft 0.74`
+Zoom in more: `./gradlew run --args="-p 6 -w 1024 -fl 0.02 -fr 0.04 -ft 0.643"`
 
-Built with OpenJDK 22.0.1
+Tested on OpenJDK 22.0.1, MacBook Pro with M1 Pro chip, MacOS Sonoma 14.6
 
 # Why
 

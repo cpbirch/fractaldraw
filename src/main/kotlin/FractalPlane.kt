@@ -20,6 +20,7 @@ class FractalPlane(
     val fRight: Float = 0.47f,
     val fTop: Float = 1.12f,
     val pixelWidth: Int = 640,
+    val pixelHeight: Int = 480,
     val aspectRatio: Float = 0.75f,
     val MAX_I: Int = 1080
 ) {
@@ -28,13 +29,11 @@ class FractalPlane(
     val xScale: Float
     val yScale: Float
     val palette: List<ARGB>
-    val pixelHeight: Int
     val b255 = 255.toByte()
 
     init {
         fBottom = fTop - ((fRight - fLeft) * aspectRatio)
         bound = Rect(fLeft, fTop, fRight, fBottom)
-        pixelHeight = (pixelWidth * aspectRatio).toInt() // preserve 4/3 ratio
         xScale = bound.width / pixelWidth
         yScale = bound.height / pixelHeight
         palette = generateSHMPalette(MAX_I)
