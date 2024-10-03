@@ -23,7 +23,7 @@ class Mandlebrot(val maxIterations: Int) {
 
     fun rowEscapeColourBytes(fp: FractalPlane, row: Int) =
         rowEscapeValues(fp.bound.left, fp.toFractalY(row), fp.xScale)
-            .flatMap { fp.rowEscapeValColourBytes(it) }
+            .flatMap { fp.colourPaletteBytes(it) }
             .take(fp.pixelWidth * 4) // 4 bytes per pixel
             .toList()
 

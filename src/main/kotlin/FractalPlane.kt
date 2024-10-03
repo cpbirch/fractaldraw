@@ -1,5 +1,4 @@
 import io.github.humbleui.types.Rect
-import kotlin.math.pow
 import kotlin.math.roundToInt
 
 typealias PixelCoord = Pair<Int, Int> // x to y
@@ -43,18 +42,9 @@ class FractalPlane(
     fun green(index: Int) = palette[index].G.toByte()
     fun blue(index: Int) = palette[index].B.toByte()
 
-    fun rowEscapeValColourBytes(ev: Int): List<Byte> {
+    fun colourPaletteBytes(ev: Int): List<Byte> {
         return if (ev < MAX_I) listOf(red(ev), green(ev), blue(ev), b255)
         else listOf(0, 0, 0, b255)
-    }
-
-    fun colourPixel(fractalVal: Int, x: Int, y: Int, bytesPerRow: Int = pixelWidth * 4, pixels: ByteArray) {
-        val argb = if (fractalVal < MAX_I) palette[fractalVal] else Colour.BLACK.argb
-        val byte = (x * 4) + (y * bytesPerRow)
-        pixels[byte] = argb.R.toByte()
-        pixels[byte + 1] = argb.G.toByte()
-        pixels[byte + 2] = argb.B.toByte()
-        pixels[byte + 3] = argb.A.toByte()
     }
 
     fun toFractalY(y: Int): Float {

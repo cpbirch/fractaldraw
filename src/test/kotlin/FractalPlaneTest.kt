@@ -1,4 +1,3 @@
-import io.github.humbleui.types.Rect
 import org.junit.jupiter.api.Assertions.*
 import kotlin.test.Test
 
@@ -139,7 +138,7 @@ class FractalPlaneTest {
         val escapeVal = 128
 
         // when
-        val rgbaList = fp.rowEscapeValColourBytes(escapeVal)
+        val rgbaList = fp.colourPaletteBytes(escapeVal)
 
         // then
         assertEquals(4, rgbaList.size)

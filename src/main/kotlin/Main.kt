@@ -55,14 +55,26 @@ fun loop(graphics2D: Graphics2D, args: Arguments) {
     val mark1 = timeSource.markNow()
     var mark2 = mark1
 
+    var paletteBytes = (0..graphics2D.width)
+        .flatMap { fp.colourPaletteBytes(it) }
+        .take(fp.pixelWidth * 4) // 4 bytes per pixel
+        .toList()
     var y = 0
     while (!graphics2D.isWindowClosing()) {
         if (y < maxY) {
 //            println("Calculating row $y of $maxY")
             calculator.parallelEscapeColourBytesRows(fp, y, parallel).forEach { row ->
-                val yByte = row.row * graphics2D.imageInfo.minRowBytes.toInt()
+                val yByte = row.row * graphics2D.minRowBytes().toInt()
                 var x = 0
                 row.escapeVals.forEach {
+                    graphics2D.pixels[yByte + x] = it
+                    x++
+                }
+            }
+            if (y < 20) {
+                val yByte = y * graphics2D.minRowBytes().toInt()
+                var x = 0
+                paletteBytes.forEach {
                     graphics2D.pixels[yByte + x] = it
                     x++
                 }
