@@ -17,11 +17,16 @@ const val sixthPI = Math.PI / 6
 const val halfPI = Math.PI / 2
 
 fun generateSHMPalette(size: Int) = MutableList(size) {
-    val rad = Math.toRadians(it.toDouble())
-    val blue = (sin(halfPI + 0.9*rad) * 160) / 2 + 175
-    val green = (sin(11 * sixthPI + rad) * 96) / 2 + 207
-    val red = (sin(rad - halfPI) * 96) / 2 + 207
-        println ("r: $red, g: $green, b: $blue")
+    // 2Pi radians = 360
+    // This function assumes a list size of 3 * 360 = 1080
+    // The colour component values follow a sine wave
+    // Normalise to 360 degrees / 2Pi radians
+    val factor = size / 360
+    val rad = Math.toRadians(it.toDouble() / factor) // stop the palette from cycling 3 times
+    val blue = (sin(halfPI + rad) * 160) / 2 + 175 // 0rad = 255, PIrad = 160
+    val green = (sin(11 * sixthPI + rad) * 96) / 2 + 207 // 0rad = 182, PIrad ~=232
+    val red = (sin(rad - halfPI) * 96) / 2 + 207 // 0rad = 160,, PIrad = 255
+    // println ("r: $red, g: $green, b: $blue")
     ARGB(
         255,
         if (red >= 0) red.toInt() else 0,

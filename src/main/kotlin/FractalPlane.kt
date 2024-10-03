@@ -16,7 +16,7 @@ data class PaintedPixel(val pixelCoord: PixelCoord = 0 to 0, val colour: ARGB = 
 
 class FractalPlane(
     val fLeft: Float = -2f,
-    val fRight: Float = 0.47f,
+    val fRight: Float = 0.66f,
     val fTop: Float = 1.12f,
     val pixelWidth: Int = 640,
     val pixelHeight: Int = 480,

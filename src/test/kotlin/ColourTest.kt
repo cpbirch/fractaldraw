@@ -13,33 +13,47 @@ class ColourTest {
         // then
         assertEquals(1080, palette.size)
         assertEquals(255, palette[0].B)
-        assertEquals(180, palette[0].G)
-        assertEquals(127, palette[0].R)
+        assertEquals(182, palette[0].G)
+        assertEquals(159, palette[0].R)
 
-        assertEquals(0, palette[90].B)
-        assertEquals(67, palette[90].G)
-        assertEquals(100, palette[90].R)
+        assertEquals(95, palette[540].B)
+        assertEquals(231, palette[540].G)
+        assertEquals(255, palette[540].R)
+    }
 
-        assertEquals(0, palette[91].B)
-        assertEquals(61, palette[91].G)
-        assertEquals(94, palette[91].R)
+    @Test
+    fun `should have 360 ARGBs`() {
+        // given
 
-        // Fix implementation - this should not be black
-        assertEquals(0, palette[180].B)
-        assertEquals(0, palette[180].G)
-        assertEquals(0, palette[180].R)
+        // when
+        val palette: List<ARGB> = generateSHMPalette(360)
 
-        // Fix implementation - this should not be black
-        assertEquals(0, palette[181].B)
-        assertEquals(0, palette[181].G)
-        assertEquals(0, palette[181].R)
+        // then
+        assertEquals(360, palette.size)
+        assertEquals(255, palette[0].B)
+        assertEquals(182, palette[0].G)
+        assertEquals(159, palette[0].R)
 
-        assertEquals(0, palette[270].B)
-        assertEquals(177, palette[270].G)
-        assertEquals(197, palette[270].R)
+        assertEquals(95, palette[180].B)
+        assertEquals(231, palette[180].G)
+        assertEquals(255, palette[180].R)
+    }
 
-        assertEquals(255, palette[360].B)
-        assertEquals(71, palette[360].G)
-        assertEquals(10, palette[360].R)
+    @Test
+    fun `should have 500 ARGBs`() {
+        // given
+
+        // when
+        val palette: List<ARGB> = generateSHMPalette(720)
+
+        // then
+        assertEquals(720, palette.size)
+        assertEquals(255, palette[0].B)
+        assertEquals(182, palette[0].G)
+        assertEquals(159, palette[0].R)
+
+        assertEquals(95, palette[360].B)
+        assertEquals(231, palette[360].G)
+        assertEquals(255, palette[360].R)
     }
 }

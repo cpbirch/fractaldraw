@@ -9,7 +9,7 @@ class MainKtTest {
         val args = arrayOf("-a", "-b", "c", "-d", "e", "f", "g", "-h", "--ignore", "--join", "k", "--link", "m", "n", "o", "-p", "q r s")
 
         // when
-        val mapped = parseArgs(args)
+        val mapped = Arguments(args)
 
         // then
         val expected = mapOf(
@@ -22,6 +22,6 @@ class MainKtTest {
             "--link" to listOf("m", "n", "o"),
             "-p" to listOf("q r s"))
 
-        assertEquals(expected, mapped)
+        assertEquals(expected, mapped.argMap)
     }
 }

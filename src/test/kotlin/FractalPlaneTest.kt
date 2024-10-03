@@ -16,7 +16,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 1f for y = 0`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val y = fp.toFractalY(0)
@@ -27,7 +27,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return -1f for y = 100`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val y = fp.toFractalY(100)
@@ -38,7 +38,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 0f for y = 50`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val y = fp.toFractalY(50)
@@ -49,7 +49,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return -1f to 1f for pixelCoord 0x0`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val fractalCoord = fp.toFractalCoord(0 to 0)
@@ -61,7 +61,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 1f to -1f for pixelCoord 100x100`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val fractalCoord = fp.toFractalCoord(100 to 100)
@@ -73,7 +73,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 0f to 0f for pixelCoord 50x50`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val fractalCoord = fp.toFractalCoord(50 to 50)
@@ -97,7 +97,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 0x0 for fractalCoord -1f to 1f`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val pixelCoord = fp.toPixelCoord(-1f to 1f)
@@ -109,7 +109,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 100x100 for fractalCoord 1f to -1f`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val pixelCoord = fp.toPixelCoord(1f to -1f)
@@ -121,7 +121,7 @@ class FractalPlaneTest {
 
     @Test
     fun `should return 50x50 for fractalCoord 0f to 0f`() {
-        val fp = FractalPlane(-1f,1f, 1f, 100, 0.75f)
+        val fp = FractalPlane(-1f,1f, 1f, 100, 75)
 
         // when
         val pixelCoord = fp.toPixelCoord(0f to 0f)

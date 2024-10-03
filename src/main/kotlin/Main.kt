@@ -10,8 +10,8 @@ fun main(args: Array<String>) {
         -p <num-threads: 1>
         -w <pixels-width: 640>
         -fl <fractal-left: neg2.0>
-        -fr <fractal-right: 0.47>
-        -ft <fractal-top: 1.12>
+        -fr <fractal-right: 0.66>
+        -ft <fractal-top: 1.02>
         -ar <aspect-ratio: 0.75>
     """.trimIndent()
     )
@@ -42,27 +42,27 @@ fun init(args: Arguments): Graphics2D {
 fun loop(graphics2D: Graphics2D, args: Arguments) {
     val parallel = args.asInt("-p", 1)
     val left = args.asFloat("-fl", -2f)
-    val right = args.asFloat("-fr", 0.47f)
-    val top = args.asFloat("-ft", 1.12f)
+    val right = args.asFloat("-fr", 0.67f)
+    val top = args.asFloat("-ft", 1f)
 
     val fp = FractalPlane(left, right, top, graphics2D.width, graphics2D.height, graphics2D.aspectRatio)
     val calculator = Mandlebrot(fp.MAX_I)
     val maxY = graphics2D.height / parallel
-    println("maxY: $maxY")
-    println("minRowBytes: ${graphics2D.minRowBytes()}")
+    // println("maxY: $maxY")
+    // println("minRowBytes: ${graphics2D.minRowBytes()}")
 
     val timeSource = TimeSource.Monotonic
     val mark1 = timeSource.markNow()
     var mark2 = mark1
 
-    var paletteBytes = (0..graphics2D.width)
-        .flatMap { fp.colourPaletteBytes(it) }
-        .take(fp.pixelWidth * 4) // 4 bytes per pixel
-        .toList()
+//    var paletteBytes = (0..graphics2D.width)
+//        .flatMap { fp.colourPaletteBytes(it) }
+//        .take(fp.pixelWidth * 4) // 4 bytes per pixel
+//        .toList()
     var y = 0
     while (!graphics2D.isWindowClosing()) {
         if (y < maxY) {
-//            println("Calculating row $y of $maxY")
+            // println("Calculating row $y of $maxY")
             calculator.parallelEscapeColourBytesRows(fp, y, parallel).forEach { row ->
                 val yByte = row.row * graphics2D.minRowBytes().toInt()
                 var x = 0
@@ -71,19 +71,19 @@ fun loop(graphics2D: Graphics2D, args: Arguments) {
                     x++
                 }
             }
-            if (y < 20) {
-                val yByte = y * graphics2D.minRowBytes().toInt()
-                var x = 0
-                paletteBytes.forEach {
-                    graphics2D.pixels[yByte + x] = it
-                    x++
-                }
-            }
+//            if (y < 20) {
+//                val yByte = y * graphics2D.minRowBytes().toInt()
+//                var x = 0
+//                paletteBytes.forEach {
+//                    graphics2D.pixels[yByte + x] = it
+//                    x++
+//                }
+//            }
             graphics2D.writePixels()
             y++
         } else if (mark2 == mark1) {
             mark2 = timeSource.markNow()
-            println(mark2 - mark1)
+            println("Time taken: ${mark2 - mark1}")
         }
 
         graphics2D.pollEvents()
