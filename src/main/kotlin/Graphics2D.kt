@@ -1,4 +1,5 @@
 import io.github.humbleui.skija.*
+import io.github.humbleui.types.Rect
 
 class Graphics2D(val width: Int = 640, val aspectRatio: Float = 0.75f, title: String) {
     val height: Int = (width * aspectRatio).toInt()
@@ -27,8 +28,12 @@ class Graphics2D(val width: Int = 640, val aspectRatio: Float = 0.75f, title: St
         SurfaceColorFormat.RGBA_8888,
         ColorSpace.getSRGBLinear()
     )
+
+    val canvas = surface.canvas
+
     // do not .close() — Surface manages its lifetime here
 
+    val boxStoke = Paint().setColor(0xFFFF0751.toInt()).setMode(PaintMode.STROKE).setStrokeWidth(1f)
     val imageInfo = ImageInfo(width, height, ColorType.RGBA_8888, ColorAlphaType.PREMUL)
     val bitmap = Bitmap()
     var pixels = ByteArray((imageInfo.minRowBytes * height).toInt()) { 0 }
@@ -51,6 +56,10 @@ class Graphics2D(val width: Int = 640, val aspectRatio: Float = 0.75f, title: St
         bitmap.installPixels(imageInfo, pixels, imageInfo.minRowBytes)
         bitmap.notifyPixelsChanged()
         surface.writePixels(bitmap, 0, 0)
+        if (window.mouseDown) {
+            val box = window.getZoomInBox()
+            canvas.drawRect(Rect.makeLTRB(box[0].toFloat(), box[1].toFloat(), box[2].toFloat(), box[3].toFloat()), boxStoke)
+        }
 
         // DRAW HERE!!!
         context.flush()

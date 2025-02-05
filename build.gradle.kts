@@ -30,6 +30,8 @@ val skijaversion = "0.116.2"
 val lwjglVersion = "3.3.4"
 val lwjglNatives = "natives-${target}"
 
+val mockkVersion = "1.13.16"
+
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
@@ -55,6 +57,7 @@ dependencies {
     runtimeOnly("org.lwjgl", "lwjgl-stb", classifier = lwjglNatives)
 
     testImplementation(kotlin("test"))
+    testImplementation("io.mockk:mockk:${mockkVersion}")
 }
 
 tasks.test {

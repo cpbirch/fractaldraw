@@ -2,6 +2,7 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import kotlin.time.TimeSource
 
+
 fun main(args: Array<String>) {
     val arguments = Arguments(args)
 
@@ -79,13 +80,13 @@ fun loop(graphics2D: Graphics2D, args: Arguments) {
 //                    x++
 //                }
 //            }
-            graphics2D.writePixels()
             y++
         } else if (mark2 == mark1) {
             mark2 = timeSource.markNow()
             println("Time taken: ${mark2 - mark1}")
         }
 
+        graphics2D.writePixels()
         graphics2D.pollEvents()
     }
     // Render loop
