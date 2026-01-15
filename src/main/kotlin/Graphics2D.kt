@@ -52,6 +52,14 @@ class Graphics2D(val width: Int = 640, val aspectRatio: Float = 0.75f, title: St
 
     fun isWindowClosing() = window.isClosing()
 
+    fun isZooming() = window.zoom
+
+    fun resetZoom() {
+        window.zoom = false
+    }
+
+    fun getZoomBox() = window.getZoomInBox()
+
     fun writePixels() {
         bitmap.installPixels(imageInfo, pixels, imageInfo.minRowBytes)
         bitmap.notifyPixelsChanged()

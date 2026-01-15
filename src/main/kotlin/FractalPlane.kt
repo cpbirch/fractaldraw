@@ -8,8 +8,8 @@ fun PixelCoord.y() = this.second
 
 typealias FractalCoord = Pair<Float, Float> // l to t
 
-fun FractalCoord.left() = this.first
-fun FractalCoord.top() = this.second
+fun FractalCoord.x() = this.first
+fun FractalCoord.y() = this.second
 
 
 data class PaintedPixel(val pixelCoord: PixelCoord = 0 to 0, val colour: ARGB = Colour.GRAY.argb)
@@ -57,7 +57,7 @@ class FractalPlane(
     }
 
     fun toPixelCoord(fractalCoord: FractalCoord): PixelCoord {
-        return ((fractalCoord.left() - bound.left) / xScale).roundToInt() to ((fractalCoord.top() - bound.top) / yScale).roundToInt()
+        return ((fractalCoord.x() - bound.left) / xScale).roundToInt() to ((fractalCoord.y() - bound.top) / yScale).roundToInt()
     }
 }
 

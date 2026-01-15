@@ -17,6 +17,7 @@ class Window(
     var mouseDown: Boolean = false,
     var mouseDownX: Double = 0.0,
     var mouseDownY: Double = 0.0,
+    var zoom: Boolean = false,
     var vsync: Boolean = true
 ) {
 
@@ -90,6 +91,7 @@ class Window(
                 println("mouseDown x: ${mouseDownX}, y: ${mouseDownY}")
             } else {
                 mouseDown = false
+                zoom = true
                 println("mouseUp")
             }
         }

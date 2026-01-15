@@ -55,8 +55,8 @@ class FractalPlaneTest {
         val fractalCoord = fp.toFractalCoord(0 to 0)
 
         // then
-        assertEquals(-1.0f, fractalCoord.left())
-        assertEquals(1.0f, fractalCoord.top())
+        assertEquals(-1.0f, fractalCoord.x())
+        assertEquals(1.0f, fractalCoord.y())
     }
 
     @Test
@@ -67,8 +67,8 @@ class FractalPlaneTest {
         val fractalCoord = fp.toFractalCoord(100 to 100)
 
         // then
-        assertEquals(1.0f, fractalCoord.left())
-        assertEquals(-1.0f, fractalCoord.top())
+        assertEquals(1.0f, fractalCoord.x())
+        assertEquals(-1.0f, fractalCoord.y())
     }
 
     @Test
@@ -79,8 +79,8 @@ class FractalPlaneTest {
         val fractalCoord = fp.toFractalCoord(50 to 50)
 
         // then
-        assertEquals(0f, fractalCoord.left())
-        assertEquals(0f, fractalCoord.top())
+        assertEquals(0f, fractalCoord.x())
+        assertEquals(0f, fractalCoord.y())
     }
 
     @Test

@@ -46,14 +46,14 @@ fun loop(graphics2D: Graphics2D, args: Arguments) {
     val right = args.asFloat("-fr", 0.67f)
     val top = args.asFloat("-ft", 1f)
 
-    val fp = FractalPlane(left, right, top, graphics2D.width, graphics2D.height, graphics2D.aspectRatio)
+    var fp = FractalPlane(left, right, top, graphics2D.width, graphics2D.height, graphics2D.aspectRatio)
     val calculator = Mandlebrot(fp.MAX_I)
     val maxY = graphics2D.height / parallel
     // println("maxY: $maxY")
     // println("minRowBytes: ${graphics2D.minRowBytes()}")
 
     val timeSource = TimeSource.Monotonic
-    val mark1 = timeSource.markNow()
+    var mark1 = timeSource.markNow()
     var mark2 = mark1
 
 //    var paletteBytes = (0..graphics2D.width)
@@ -84,6 +84,24 @@ fun loop(graphics2D: Graphics2D, args: Arguments) {
         } else if (mark2 == mark1) {
             mark2 = timeSource.markNow()
             println("Time taken: ${mark2 - mark1}")
+        } else if (graphics2D.isZooming()) {
+            val zoomBox = graphics2D.getZoomBox()
+            val fTopLeft = fp.toFractalCoord(PixelCoord(zoomBox[0].toInt(), zoomBox[1].toInt()))
+            val fBottomRight = fp.toFractalCoord(PixelCoord(zoomBox[2].toInt(), zoomBox[3].toInt()))
+            fp = FractalPlane(
+                fLeft = fTopLeft.x(),
+                fRight = fBottomRight.x(),
+                fTop = fTopLeft.y(),
+                pixelWidth = graphics2D.width,
+                pixelHeight = graphics2D.height,
+                aspectRatio = graphics2D.aspectRatio,
+                MAX_I = fp.MAX_I
+            )
+            println("Zoom to box: $zoomBox to fractal coords: $fTopLeft to $fBottomRight")
+            y = 0
+            mark1 = timeSource.markNow()
+            mark2 = mark1
+            graphics2D.resetZoom()
         }
 
         graphics2D.writePixels()
