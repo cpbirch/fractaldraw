@@ -11,9 +11,6 @@ typealias FractalCoord = Pair<Float, Float> // l to t
 fun FractalCoord.x() = this.first
 fun FractalCoord.y() = this.second
 
-
-data class PaintedPixel(val pixelCoord: PixelCoord = 0 to 0, val colour: ARGB = Colour.GRAY.argb)
-
 class FractalPlane(
     val fLeft: Float = -2f,
     val fRight: Float = 0.66f,

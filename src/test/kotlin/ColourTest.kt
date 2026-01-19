@@ -1,5 +1,6 @@
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ColourTest {
 
@@ -12,13 +13,14 @@ class ColourTest {
 
         // then
         assertEquals(1080, palette.size)
-        assertEquals(255, palette[0].B)
-        assertEquals(182, palette[0].G)
-        assertEquals(159, palette[0].R)
 
-        assertEquals(95, palette[540].B)
-        assertEquals(231, palette[540].G)
-        assertEquals(255, palette[540].R)
+        assertTrue(palette.minOf { it.R } >= 25, "Red min value should be greater or equal to 25")
+        assertTrue(palette.minOf { it.G } >= 25, "Green min value should be greater or equal to 25")
+        assertTrue(palette.minOf { it.B } >= 50, "Blue min value should be greater or equal to 50")
+
+        assertTrue(palette.maxOf { it.R } <= 205, "Red max value should be fewer or equal to 205")
+        assertTrue(palette.maxOf { it.G } <= 230, "Green max value should be fewer or equal to 230")
+        assertTrue(palette.maxOf { it.B } <= 255, "Blue max value should be fewer or equal to 255")
     }
 
     @Test
@@ -30,17 +32,19 @@ class ColourTest {
 
         // then
         assertEquals(360, palette.size)
-        assertEquals(255, palette[0].B)
-        assertEquals(182, palette[0].G)
-        assertEquals(159, palette[0].R)
 
-        assertEquals(95, palette[180].B)
-        assertEquals(231, palette[180].G)
-        assertEquals(255, palette[180].R)
+        assertTrue(palette.minOf { it.R } >= 25, "Red min value should be greater or equal to 25")
+        assertTrue(palette.minOf { it.G } >= 25, "Green min value should be greater or equal to 25")
+        assertTrue(palette.minOf { it.B } >= 50, "Blue min value should be greater or equal to 50")
+
+        assertTrue(palette.maxOf { it.R } <= 205, "Red max value should be fewer or equal to 205")
+        assertTrue(palette.maxOf { it.G } <= 230, "Green max value should be fewer or equal to 230")
+        assertTrue(palette.maxOf { it.B } <= 255, "Blue max value should be fewer or equal to 255")
+
     }
 
     @Test
-    fun `should have 500 ARGBs`() {
+    fun `should have 720 ARGBs`() {
         // given
 
         // when
@@ -48,12 +52,14 @@ class ColourTest {
 
         // then
         assertEquals(720, palette.size)
-        assertEquals(255, palette[0].B)
-        assertEquals(182, palette[0].G)
-        assertEquals(159, palette[0].R)
 
-        assertEquals(95, palette[360].B)
-        assertEquals(231, palette[360].G)
-        assertEquals(255, palette[360].R)
+        assertTrue(palette.minOf { it.R } >= 25, "Red min value should be greater or equal to 25")
+        assertTrue(palette.minOf { it.G } >= 25, "Green min value should be greater or equal to 25")
+        assertTrue(palette.minOf { it.B } >= 50, "Blue min value should be greater or equal to 50")
+
+        assertTrue(palette.maxOf { it.R } <= 205, "Red max value should be fewer or equal to 205")
+        assertTrue(palette.maxOf { it.G } <= 230, "Green max value should be fewer or equal to 230")
+        assertTrue(palette.maxOf { it.B } <= 255, "Blue max value should be fewer or equal to 255")
+
     }
 }

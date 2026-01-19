@@ -1,14 +1,14 @@
 
-# TLDR;
-`./gradlew run -p 4`
+# Mandlebrot Fractal Renderer in Kotlin with Coroutines
+
+## TLDR;
+`./gradlew run --args="-p 8 -w 1440"`
 
 Your mileage may vary... see problems below.
 
-Zoom in: `./gradlew run -p 8 -w 1024 -fl neg0.06 -fr 0.1 -ft 0.74`
+Tested on OpenJDK 22.0.1 & 23.0.2, MacBook Pro with M1 Pro chip, MacOS 14.6, 15.2, 26.2
 
-Zoom in more: `./gradlew run --args="-p 6 -w 1024 -fl 0.02 -fr 0.04 -ft 0.643"`
-
-Tested on OpenJDK 22.0.1 & 23.0.1, MacBook Pro with M1 Pro chip, MacOS 14.6 and 15.2
+Draw a box with the mouse to zoom in.
 
 # Why
 
